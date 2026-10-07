@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>S I A - Sistema de intercambio de archivos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F4; --surface:#FFFFFF; --ink:#0F2A3D; --muted:#4F6676; --line:#C5D0D8;
+  --accent:#2447F5; --accent-ink:#FFFFFF; --ok:#14876A;
+  --head:"Bricolage Grotesque","Trebuchet MS",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0E1A24;--surface:#16273A;--ink:#E6EEF4;--muted:#9DB2C2;--line:#2B4155;--accent:#7C95FF;--accent-ink:#0E1A24;--ok:#4FD1A8}
+}
+:root[data-theme="dark"]{--bg:#0E1A24;--surface:#16273A;--ink:#E6EEF4;--muted:#9DB2C2;--line:#2B4155;--accent:#7C95FF;--accent-ink:#0E1A24;--ok:#4FD1A8}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--body)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.25rem}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 0}
+.logo{font:800 1.25rem var(--head);letter-spacing:-.01em}
+nav a{margin-left:1.25rem;color:var(--muted);text-decoration:none;font-weight:500}
+nav a:hover{color:var(--ink)}
+.hero{padding:2.5rem 0 3.5rem;display:grid;gap:2.5rem;grid-template-columns:1fr}
+@media(min-width:60rem){.hero{grid-template-columns:1fr 1.15fr;align-items:center}}
+h1{font:800 clamp(2.4rem,6vw,4rem)/1.02 var(--head);letter-spacing:-.03em;margin:0 0 1.25rem}
+.lead{font-size:1.2rem;color:var(--muted);max-width:34rem;margin:0 0 1.75rem}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:.8rem 1.4rem;border-radius:.5rem;font-weight:500;text-decoration:none}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line);margin-left:.5rem}
+.diagram{background:var(--surface);border:1.5px solid var(--line);border-radius:1rem;padding:1rem}
+.diagram svg{display:block;width:100%;height:auto}
+.diagram text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.diagram .sub{fill:var(--muted);font-size:11px}
+.node{fill:var(--bg);stroke:var(--ink);stroke-width:1.5}
+.link{stroke:var(--line);stroke-width:2;fill:none}
+.link.usb{stroke:var(--ok)}
+.link.wifi{stroke:var(--accent);stroke-dasharray:5 5}
+.packet{fill:var(--accent)}
+@media(prefers-reduced-motion:reduce){.packet{display:none}}
+section{padding:3.5rem 0;border-top:1.5px solid var(--line)}
+h2{font:800 clamp(1.7rem,4vw,2.4rem)/1.1 var(--head);letter-spacing:-.02em;margin:0 0 .75rem}
+.intro{color:var(--muted);max-width:38rem;margin:0 0 2rem}
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+ol.steps li{counter-increment:s;border-left:3px solid var(--accent);padding:.25rem 0 .25rem 1rem}
+ol.steps li::before{content:counter(s);font:800 1.6rem var(--head);color:var(--accent);display:block}
+ol.steps b,.feat b{font-family:var(--head);font-size:1.15rem;display:block;margin-bottom:.2rem}
+.feats{display:grid;gap:2rem 2.5rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.feat p,ol.steps p{margin:0;color:var(--muted)}
+.two{display:grid;gap:2rem;grid-template-columns:1fr}
+@media(min-width:56rem){.two{grid-template-columns:1fr 1fr}}
+.panel{background:var(--surface);border:1.5px solid var(--line);border-radius:1rem;padding:1.5rem}
+.panel h3{font:800 1.3rem var(--head);margin:0 0 .5rem}
+.panel p{margin:0 0 .75rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:30rem}
+th,td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--line)}
+th{font:800 .95rem var(--head)}
+td:first-child{font-weight:500}
+.stack{display:flex;flex-wrap:wrap;gap:.6rem;padding:0;margin:0;list-style:none}
+.stack li{border:1.5px solid var(--line);border-radius:999px;padding:.35rem .9rem;background:var(--surface)}
+footer{border-top:1.5px solid var(--line);padding:2rem 0 3rem;color:var(--muted);font-size:.95rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="logo">Sistema de intercambio de archivos</span>
+    <nav aria-label="Principal"><a href="#como">Cómo funciona</a><a href="#grupos">Grupos</a><a href="#esp32">ESP32</a><a href="#tech">Tecnología</a></nav>
+  </header>
+
+  <main>
+  <div class="hero">
+    <div>
+      <h1>Subí un archivo en una PC. Descargalo en otra.</h1>
+      <p class="lead">Un servidor de archivos para tu red interna, sin depender de internet. Cada archivo se comparte solo con quienes tengan la contraseña del grupo.</p>
+      <a class="btn" href="#como">Ver cómo funciona</a><a class="btn alt" href="#esp32">Equipos sin red</a>
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 640 320" role="img" aria-label="Diagrama: la PC 1 sube archivos al servidor y la PC 2 los descarga. Una PC sin red se conecta por USB a una ESP32, que se comunica por Wi-Fi con el servidor.">
+        <path id="p1" class="link" d="M130 70 H260"/>
+        <path id="p2" class="link" d="M380 70 H510"/>
+        <path class="link usb" d="M130 250 H260"/>
+        <path class="link wifi" d="M380 250 H420 Q450 250 450 220 V120 Q450 100 430 100 H380"/>
+        <path class="link" d="M320 100 V170" style="display:none"/>
+        <rect class="node" x="20" y="40" width="110" height="60" rx="8"/><text x="75" y="68" text-anchor="middle">PC 1</text><text class="sub" x="75" y="86" text-anchor="middle">sube</text>
+        <rect class="node" x="510" y="40" width="110" height="60" rx="8"/><text x="565" y="68" text-anchor="middle">PC 2</text><text class="sub" x="565" y="86" text-anchor="middle">descarga</text>
+        <rect class="node" x="260" y="30" width="120" height="100" rx="10" style="fill:var(--accent);stroke:var(--accent)"/><text x="320" y="74" text-anchor="middle" style="fill:var(--accent-ink);font-weight:500">Servidor</text><text class="sub" x="320" y="94" text-anchor="middle" style="fill:var(--accent-ink)">Angular + API</text>
+        <rect class="node" x="20" y="220" width="110" height="60" rx="8"/><text x="75" y="246" text-anchor="middle">PC sin red</text><text class="sub" x="75" y="264" text-anchor="middle">sin internet</text>
+        <rect class="node" x="260" y="220" width="120" height="60" rx="8"/><text x="320" y="246" text-anchor="middle">ESP32</text><text class="sub" x="320" y="264" text-anchor="middle">puente USB</text>
+        <text class="sub" x="195" y="240" text-anchor="middle">USB</text>
+        <text class="sub" x="468" y="180">Wi-Fi</text>
+        <circle class="packet" r="6"><animateMotion dur="2.4s" begin="0.4s" repeatCount="3" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#p1"/></animateMotion></circle>
+        <circle class="packet" r="6"><animateMotion dur="2.4s" begin="1.6s" repeatCount="3" calcMode="linear"><mpath href="#p2"/></animateMotion></circle>
+      </svg>
+    </div>
+  </div>
+
+  <section id="como">
+    <h2>Cómo funciona</h2>
+    <p class="intro">Todo pasa dentro de tu red. Los archivos viven en el servidor, no en la nube.</p>
+    <ol class="steps">
+      <li><b>Ingresá</b><p>Entrá con tu usuario desde cualquier navegador de la intranet.</p></li>
+      <li><b>Subí el archivo</b><p>Elegí el archivo y el grupo que podrá descargarlo.</p></li>
+      <li><b>Compartí la contraseña</b><p>Pasale al otro usuario la contraseña del grupo.</p></li>
+      <li><b>Descargá</b><p>Desde otra PC, ingresá la contraseña y bajá el archivo.</p></li>
+    </ol>
+  </section>
+
+  <section id="grupos">
+    <h2>Grupos con contraseña y vencimiento</h2>
+    <p class="intro">El grupo decide quién ve cada archivo y por cuánto tiempo sigue disponible.</p>
+    <div class="feats">
+      <div class="feat"><b>Acceso por contraseña</b><p>Solo quien conoce la contraseña del grupo puede ver y descargar sus archivos.</p></div>
+      <div class="feat"><b>Vos elegís el destino</b><p>Al subir un archivo, marcás en qué grupo queda disponible.</p></div>
+      <div class="feat"><b>Vencimiento automático</b><p>Cuando el grupo vence, se borran el grupo y sus archivos.</p></div>
+    </div>
+    <div class="tbl" style="margin-top:2rem">
+      <table>
+        <thead><tr><th>Tipo de usuario</th><th>Puede crear grupos</th><th>Duración máxima</th></tr></thead>
+        <tbody>
+          <tr><td>Usuario</td><td>Sí</td><td>Corta (por ejemplo, 24 horas)</td></tr>
+          <tr><td>Usuario con privilegios</td><td>Sí</td><td>Larga, definida por el administrador</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="esp32">
+    <h2>Para computadoras sin acceso a la red</h2>
+    <p class="intro">Si una PC no puede conectarse a la intranet, usa un dispositivo propio basado en ESP32.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Qué hace</h3>
+        <p>La PC lo conecta por USB y accede al servidor a través de una interfaz sencilla. La ESP32 se encarga de la conexión Wi-Fi.</p>
+        <p>Con eso, esa PC puede subir y descargar archivos como cualquier otra.</p>
+      </div>
+      <div class="panel">
+        <h3>Qué necesitás</h3>
+        <p>Una placa ESP32, un cable USB y red Wi-Fi de la intranet dentro del alcance.</p>
+        <p>No hace falta instalar la web: el dispositivo ofrece la interfaz.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <h2>Tecnología</h2>
+    <p class="intro">Un frontend, un servidor y un dispositivo de hardware trabajando juntos.</p>
+    <ul class="stack">
+      <li>Angular</li><li>Node.js (Express o NestJS)</li><li>Base de datos SQLite o PostgreSQL</li><li>ESP32 (Wi-Fi + USB)</li><li>Contraseñas con hash (bcrypt)</li><li>Tareas programadas de limpieza</li>
+    </ul>
+  </section>
+  </main>
+
+  <footer>Proyecto tecnológico – Servidor de archivos para intranet con puente ESP32.</footer>
+</div>
+</body>
+</html>
